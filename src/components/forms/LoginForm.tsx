@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
+import { Icon } from 'react-icons-kit';
+import { eyeOff } from 'react-icons-kit/feather/eyeOff';
+import { eye } from 'react-icons-kit/feather/eye';
 import RequestManager from '@/services/requestManager/requestManager.service';
 import StorageManager from '@/services/storageManager/storageManager.service';
 type LoginResponse = {
@@ -17,6 +20,8 @@ function LoginForm(props: { updateActiveForm: (value: boolean) => void }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [type, setType] = useState('password');
+  const [icon, setIcon] = useState(eyeOff);
   const validateInput = (): boolean => {
     return !(username === '' || password === '');
   };
@@ -34,9 +39,15 @@ function LoginForm(props: { updateActiveForm: (value: boolean) => void }) {
         password,
       }).post();
       if (!response.success) {
-        toast.error('Failed : Invalid Credentials 🫤', {
-          position: toast.POSITION.TOP_CENTER,
-        });
+        if (response.response?.response?.data?.status === 403) {
+          toast.error('Failed : Invalid Credentials 🫤', {
+            position: toast.POSITION.TOP_CENTER,
+          });
+        } else {
+          toast.warning('Failed : Disconnected 🫤', {
+            position: toast.POSITION.TOP_CENTER,
+          });
+        }
       } else {
         const loginRes = response.response as LoginResponse;
         new StorageManager().setUser(loginRes.data);
@@ -50,6 +61,15 @@ function LoginForm(props: { updateActiveForm: (value: boolean) => void }) {
       });
     } finally {
       setLoading(false);
+    }
+  };
+  const handleToggle = () => {
+    if (type === 'password') {
+      setIcon(eye);
+      setType('text');
+    } else {
+      setIcon(eyeOff);
+      setType('password');
     }
   };
   return (
@@ -68,14 +88,19 @@ function LoginForm(props: { updateActiveForm: (value: boolean) => void }) {
               placeholder="Username"
             />
 
-            <input
-              type="password"
-              className="block border border-grey-light w-full p-3 rounded mb-4"
-              name="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password"
-            />
+            <div className="flex mb-4 ">
+              <input
+                type={type}
+                className="border border-grey-light w-full p-3 rounded mb-4"
+                name="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <span className="flex justify-around items-center" onClick={handleToggle}>
+                <Icon className="absolute mr-10" icon={icon} size={20} />
+              </span>
+            </div>
 
             <button
               type="submit"
