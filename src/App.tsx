@@ -6,10 +6,13 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './views/home/Home';
 import NoPage from './views/noPage/NoPage';
 import Auth from './views/auth/Auth';
+import NavBar from './components/Horizontal/NavBar';
+import Footer from './components/Horizontal/Footer';
 function App() {
   return (
     <>
       <BrowserRouter>
+        <NavBar />
         <Routes>
           <Route index path="/" element={<Home />} />
           <Route path="/auth" element={<Auth />} />
@@ -28,6 +31,7 @@ function App() {
         draggable
         pauseOnHover
       />
+      <Footer />
     </>
   );
 }

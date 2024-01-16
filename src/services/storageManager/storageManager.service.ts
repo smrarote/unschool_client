@@ -1,7 +1,7 @@
 type UserStore = {
   token: string;
   user_id: string;
-  user_name: string;
+  username: string;
   createdAt: string;
 };
 export default class StorageManager {
@@ -21,6 +21,9 @@ export default class StorageManager {
       console.log('Failed to parse data');
     }
     return null;
+  }
+  public destroyUser(): void {
+    localStorage.removeItem('user');
   }
   public getToken(): string | null {
     try {
