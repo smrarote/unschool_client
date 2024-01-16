@@ -31,6 +31,9 @@ function LoginForm(props: { updateActiveForm: (value: boolean) => void }) {
   const handleSubmit = async (): Promise<void> => {
     if (!validateInput()) {
       setInputValid(false);
+      toast.error('Invalid Inputs 🫤', {
+        position: toast.POSITION.TOP_CENTER,
+      });
       return;
     }
     try {

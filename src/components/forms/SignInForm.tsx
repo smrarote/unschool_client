@@ -29,6 +29,10 @@ function SignInForm(props: { updateActiveForm: (value: boolean) => void }) {
   }
   const handleSubmit = async (): Promise<void> => {
     if (!validation()) {
+      setInputValid(false);
+      toast.error('Invalid Inputs 🫤', {
+        position: toast.POSITION.TOP_CENTER,
+      });
       return;
     }
     // post the request
@@ -85,7 +89,6 @@ function SignInForm(props: { updateActiveForm: (value: boolean) => void }) {
       !passwordRegex.test(password) ||
       !match
     ) {
-      setInputValid(false);
       return false;
     }
     return true;
