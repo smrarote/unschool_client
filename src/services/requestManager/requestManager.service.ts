@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosResponse, AxiosError } from 'axios';
+import { BASE_URL } from './apiPaths';
 export default class RequestManager<T> {
   private client = axios;
+  private BASE_URL = BASE_URL;
   public headers: object = {
     'Content-Type': 'application/json',
   };
@@ -17,17 +19,23 @@ export default class RequestManager<T> {
       }),
     };
     this.body = body;
-    this.path = path;
+    this.path = this.BASE_URL + path;
+    console.log(this.path);
   }
   //   async get(): Promise<[success: number, data: object | null]> {}
-  async post(): Promise<{ success: boolean; response: T | AxiosError }> {
+  async post(): Promise<{
+    data(data: any): unknown;
+    code: number;
+    success: boolean;
+    response: T | AxiosError;
+  }> {
     return this.client
       ?.post(this.path, this.body, { headers: this.headers })
       .then((data: AxiosResponse) => {
-        return { success: true, response: data.data };
+        return data.data;
       })
       .catch((error: AxiosError) => {
-        return { success: false, response: error };
+        return error.response?.data;
       });
   }
   //   async delete(): Promise<[success: number, data: object | null]> {}

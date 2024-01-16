@@ -1,3 +1,13 @@
-import { AxiosResponse, AxiosError } from 'axios';
+export interface success {
+  code: number;
+  success: boolean;
+  message: string;
+}
 
-export type ApiResponse = { success: boolean; response: AxiosResponse | AxiosError };
+export interface fail {
+  code: number;
+  success: boolean;
+  message: string;
+  name: string;
+  stack?: string;
+}

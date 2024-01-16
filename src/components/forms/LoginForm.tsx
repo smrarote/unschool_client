@@ -5,42 +5,47 @@ import { eyeOff } from 'react-icons-kit/feather/eyeOff';
 import { eye } from 'react-icons-kit/feather/eye';
 import RequestManager from '@/services/requestManager/requestManager.service';
 import StorageManager from '@/services/storageManager/storageManager.service';
-type LoginResponse = {
-  code: number;
-  success: boolean;
-  message: string;
+import { success, fail } from '../types';
+interface LoginSuccess extends success {
   data: {
     token: string;
     user_id: string;
     user_name: string;
     createdAt: string;
   };
-};
+}
+interface LoginFailure extends fail {
+  body: object;
+}
+
 function LoginForm(props: { updateActiveForm: (value: boolean) => void }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [type, setType] = useState('password');
   const [icon, setIcon] = useState(eyeOff);
+  const [isInputValid, setInputValid] = useState(true);
   const validateInput = (): boolean => {
     return !(username === '' || password === '');
   };
   const handleSubmit = async (): Promise<void> => {
     if (!validateInput()) {
-      toast.warning('Require password and username', {
-        position: toast.POSITION.TOP_CENTER,
-      });
+      setInputValid(false);
       return;
     }
-    setLoading(true);
     try {
-      const response = await new RequestManager<LoginResponse>('http://localhost:3000/api/v1/user/signin', {}, null, {
+      setLoading(true);
+      const response = await new RequestManager<LoginSuccess | LoginFailure>('/api/v1/user/signin', {}, null, {
         username,
         password,
       }).post();
       if (!response.success) {
-        if (response.response?.response?.data?.status === 403) {
+        if (response?.code === 403) {
           toast.error('Failed : Invalid Credentials 🫤', {
+            position: toast.POSITION.TOP_CENTER,
+          });
+        } else if (response?.code === 422) {
+          toast.error('Failed : invalid inputs 🫤', {
             position: toast.POSITION.TOP_CENTER,
           });
         } else {
@@ -49,8 +54,7 @@ function LoginForm(props: { updateActiveForm: (value: boolean) => void }) {
           });
         }
       } else {
-        const loginRes = response.response as LoginResponse;
-        new StorageManager().setUser(loginRes.data);
+        new StorageManager().setUser((response as unknown as LoginSuccess).data);
         toast.success('Success : login success 😀', {
           position: toast.POSITION.TOP_CENTER,
         });
@@ -79,19 +83,21 @@ function LoginForm(props: { updateActiveForm: (value: boolean) => void }) {
           <div className="bg-white px-6 py-8 rounded shadow-md text-black w-full">
             <h1 className="mb-8 text-3xl text-center">Login To Account </h1>
 
-            <input
-              type="text"
-              className="block border border-grey-light w-full p-3 rounded mb-4"
-              name="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Username"
-            />
+            <div className="flex mb-4">
+              <input
+                type="text"
+                className={`block border ${!isInputValid ? 'border-red-400' : 'border-grey-light'} w-full p-3 rounded mb-4`}
+                name="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Username"
+              />
+            </div>
 
-            <div className="flex mb-4 ">
+            <div className="flex mb-4">
               <input
                 type={type}
-                className="border border-grey-light w-full p-3 rounded mb-4"
+                className={`block border ${!isInputValid ? 'border-red-400' : 'border-grey-light'} w-full p-3 rounded mb-4`}
                 name="password"
                 placeholder="Password"
                 value={password}
