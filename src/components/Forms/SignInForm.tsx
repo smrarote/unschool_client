@@ -112,7 +112,7 @@ function SignInForm(props: { updateActiveForm: (value: boolean) => void }) {
   };
   return (
     <>
-      <div className="bg-grey-lighter min-h-screen flex flex-col">
+      <div className="relative bg-grey-lighter min-h-screen flex flex-col">
         <div className="container max-w-sm mx-auto flex-1 flex flex-col items-center justify-center px-2">
           <div className="bg-white px-6 py-5 rounded shadow-md text-black w-full">
             <h1 className="mb-8 text-3xl text-center">Create Account</h1>

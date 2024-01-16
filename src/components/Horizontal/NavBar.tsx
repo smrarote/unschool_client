@@ -17,7 +17,7 @@ function NavBar() {
   return (
     <>
       <nav>
-        <div className="">
+        <div className="z-400">
           <div className="flex justify-between h-16 px-10 shadow items-center bg-gray-100">
             <div className="flex items-center space-x-8">
               <h1 className="text-xl lg:text-2xl font-bold cursor-pointer">UnSchool</h1>
