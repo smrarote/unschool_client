@@ -6,21 +6,20 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './views/home/Home';
 import NoPage from './views/noPage/NoPage';
 import Auth from './views/auth/Auth';
-import NavBar from './components/Horizontal/NavBar';
-import Footer from './components/Horizontal/Footer';
-import SideBar from './components/Vertical/SideBar';
+import CourseList from './views/courses/CourseList';
+import Layout from './views/layout/Layout';
 function App() {
   return (
     <>
       <BrowserRouter>
-        <NavBar />
-        <SideBar />
-        <Routes>
-          <Route index path="/" element={<Home />} />
-          <Route path="/auth" element={<Auth />} />
-          <Route path="*" element={<NoPage />} />
-        </Routes>
-        <Footer />
+        <Layout>
+          <Routes>
+            <Route index path="/" element={<Home />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/courses" element={<CourseList />} />
+            <Route path="*" element={<NoPage />} />
+          </Routes>
+        </Layout>
       </BrowserRouter>
       <ToastContainer
         position="top-right"
