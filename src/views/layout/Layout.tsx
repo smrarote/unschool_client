@@ -7,9 +7,11 @@ const Layout = (props: { children: ReactNode }) => {
   return (
     <div>
       <NavBar />
-      <div className="flex">
-        <SideBar />
-        {props.children}
+      <div className="container">
+        <div>
+          <SideBar />
+        </div>
+        <div className="itme-center">{props.children}</div>
       </div>
       <Footer />
     </div>
